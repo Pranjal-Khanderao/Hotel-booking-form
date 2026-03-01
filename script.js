@@ -25,4 +25,4 @@ form.addEventListener("submit", function(e) {
     errorMsg.textContent = "";
     alert("Booking Successful!");
     form.reset();
-});
+}); 
