@@ -1,0 +1,88 @@
+Day 01 Progress Report
+
+Date: 27/02/2026
+In Time: 1:00 PM
+Out Time: 1:20 PM
+Name: Pranjal Khanderao 
+Task: Hotel Booking Form
+
+🔸Progress Summary
+
+Initialized the project structure for the Hotel Booking Form application.
+Developed the foundational HTML layout, including:
+Check-in date input field
+Check-out date input field
+Room type dropdown selection
+Number of guests input field
+Special requests textarea
+Submit button
+Applied basic CSS styling to maintain proper layout, spacing, and alignment.
+Created and linked a separate JavaScript file for upcoming validation and interactive features.
+Set up a remote GitHub repository and connected it with the local project directory.
+Successfully pushed the initial project files to the GitHub repository.
+
+🔸Required Upgrades
+
+Improve overall UI design and make the form fully responsive.
+Implement client-side form validation using JavaScript.
+Add date validation logic to ensure the check-out date is later than the check-in date.
+
+---------------------------------------------------------------------------------------------------
+
+Day 02 Progress Report
+
+Date: 28/02/2026
+In Time: 5:00 PM
+Out Time: 7:00 PM
+Name: Pranjal Khanderao 
+Task: Hotel Booking Form
+
+🔸Progress Summary:
+
+* Reviewed the previously created basic HTML structure of the Hotel Booking Form.
+* Improved overall layout and alignment of form elements.
+* Added proper <label> tags for each input field to enhance accessibility.
+* Organized form sections using semantic HTML elements for better structure.
+* Enhanced Room Type dropdown structure with clear option values.
+* Improved Special Requests textarea for better usability.
+* Added placeholder text to guide users while filling the form.
+* Verified and applied required attributes for mandatory fields.
+* Checked and corrected appropriate input types (date, number).
+* Re-formatted and indented code for clean and readable structure.
+* Updated and pushed the improved HTML file to GitHub repository.
+
+🔸Required Upgrades:
+
+* Implement advanced CSS styling for better UI appearance.
+* Add JavaScript-based form validation.
+* Introduce date validation logic (Check-out date must be after Check-in date).
+* Improve responsiveness for mobile devices.
+
+🔸GitHub:- https://github.com/Pranjal-Khanderao/Hotel-booking-form
+
+-----------------------------------------------------------------------------------
+
+Day 03 Progress Report
+Date: 01/03/2026
+In Time: 5:00 PM
+Out Time: 7:00 PM
+Name: Pranjal Khanderao
+Task: Hotel Booking Form
+
+🔸 Work Completed :
+Enhanced the overall user interface by applying refined and structured CSS styling for a more professional layout.
+Designed a modern gradient background along with an improved booking container for better visual hierarchy.
+Integrated smooth fade-in animation effects to create a polished and interactive user experience.
+Improved input field interactions by adding focus states with border highlights and subtle shadow transitions.
+Developed comprehensive JavaScript form validation with clear, field-specific error messages.
+Structured validation logic using reusable helper functions (setError() and clearErrors()) to improve maintainability and readability.
+Implemented real-time date validation to automatically prevent selection of invalid Check-out dates.
+Restricted past date selection for both Check-in and Check-out fields to ensure accurate booking inputs.
+Planned Enhancements:
+Introduce a booking summary preview section before final form submission.
+Improve accessibility by incorporating ARIA attributes to support screen readers.
+Conduct cross-browser compatibility testing and optimize UI responsiveness.
+
+🔸 GitHub :-https://github.com/Pranjal-Khanderao/Hotel-booking-form
+
+🔸GitHub Link:https://github.com/Pranjal-Khanderao/Hotel-booking-form
