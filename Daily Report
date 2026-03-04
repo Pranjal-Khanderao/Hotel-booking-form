@@ -85,4 +85,35 @@ Conduct cross-browser compatibility testing and optimize UI responsiveness.
 
 🔸 GitHub :-https://github.com/Pranjal-Khanderao/Hotel-booking-form
 
-🔸GitHub Link:https://github.com/Pranjal-Khanderao/Hotel-booking-form
+🔸GitHub Link:https://github.com/Pranjal-Khanderao/Hotel-booking-form 
+
+-----------------------------------------------------------------------------------------------------------
+Day 04 Progress Report 
+
+Date: 02/03/2026
+In Time: 8:00 PM
+Out Time: 10:00 PM
+Name: Pranjal Khanderao
+Task: Hotel Booking Form
+
+ 🔸Progress Summary: 
+
+Added robust validation for email addresses and phone numbers.
+Implemented guest number check with allowed range from 1 to 10.
+Displayed specific error messages beneath each invalid input.
+Applied red border styling on invalid fields for clearer user feedback.
+Added a loading indicator with “Processing…” button behavior during submission.
+Replaced generic alert popups with inline success confirmation messages.
+Enhanced mobile responsiveness using CSS media queries.
+Thoroughly tested the form for edge cases and across multiple browsers.
+Updated the improved frontend code and pushed it to gitHub.
+
+ 🔸Planned Upgrades :
+
+Integrate LocalStorage to save temporary booking information on the client side.
+Add a dark mode toggle for better user experience.
+Enhance UI with smoother animations and transitions.
+Implement a form reset confirmation to avoid accidental data loss.
+
+ 🔸GitHub :https://github.com/Pranjal-Khanderao/Hotel-booking-form
+
