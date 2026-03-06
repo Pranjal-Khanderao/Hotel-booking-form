@@ -1,98 +1,184 @@
-const form = document.getElementById("bookingForm");
-const submitBtn = document.getElementById("submitBtn");
-const successMsg = document.getElementById("successMsg");
+// ─── State ───────────────────────────────────────────────────────────────────
+let selectedRoom  = null;
+let selectedPrice = 0;
 
-const checkin = document.getElementById("checkin");
+// ─── Date Setup ──────────────────────────────────────────────────────────────
+const today    = new Date().toISOString().split("T")[0];
+const checkin  = document.getElementById("checkin");
 const checkout = document.getElementById("checkout");
 
-// Prevent past dates
-const today = new Date().toISOString().split("T")[0];
 checkin.setAttribute("min", today);
 checkout.setAttribute("min", today);
 
-checkin.addEventListener("change", function () {
-    checkout.value = "";
-    checkout.setAttribute("min", checkin.value);
+checkin.addEventListener("change", () => {
+  checkout.value = "";
+  checkout.setAttribute("min", checkin.value);
 });
 
-function clearErrors() {
-    document.querySelectorAll(".field-error").forEach(el => el.textContent = "");
-    document.querySelectorAll("input, select").forEach(el => el.classList.remove("input-error"));
-    successMsg.textContent = "";
+// ─── Room Selection ───────────────────────────────────────────────────────────
+function selectRoom(radio) {
+  selectedRoom  = radio.value;
+  selectedPrice = parseInt(radio.dataset.price);
+  document.getElementById("roomError").textContent = "";
 }
 
-function setError(fieldId, message) {
-    const input = document.getElementById(fieldId);
-    const error = document.getElementById(fieldId + "Error");
-    input.classList.add("input-error");
-    error.textContent = message;
+// ─── Error Helpers ────────────────────────────────────────────────────────────
+function clearErr(...ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("input-error");
+    const err = document.getElementById(id + "Error");
+    if (err) err.textContent = "";
+  });
 }
 
-form.addEventListener("submit", function (e) {
-    e.preventDefault();
+function setErr(id, msg) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add("input-error");
+  const err = document.getElementById(id + "Error");
+  if (err) err.textContent = msg;
+  return true;
+}
 
-    clearErrors();
+// ─── Validation ───────────────────────────────────────────────────────────────
+function validate(step) {
+  let bad = false;
 
-    let hasError = false;
+  if (step === 1) {
+    clearErr("fullname", "email", "phone");
+    if (!document.getElementById("fullname").value.trim())
+      bad = setErr("fullname", "Name is required.");
+    const em = document.getElementById("email").value.trim();
+    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))
+      bad = setErr("email", "Enter a valid email.");
+    if (document.getElementById("phone").value.replace(/\D/g, "").length < 10)
+      bad = setErr("phone", "Enter a valid 10-digit number.");
+  }
 
-    const fullname = document.getElementById("fullname").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const room = document.getElementById("room").value;
-    const guests = document.getElementById("guests").value;
-
-    if (!fullname) {
-        setError("fullname", "Full name is required.");
-        hasError = true;
+  if (step === 2) {
+    clearErr("checkin", "checkout", "guests");
+    if (!selectedRoom) {
+      document.getElementById("roomError").textContent = "Please select a room.";
+      bad = true;
     }
+    const ci = checkin.value, co = checkout.value;
+    if (!ci) bad = setErr("checkin", "Select check-in date.");
+    if (!co) bad = setErr("checkout", "Select check-out date.");
+    if (ci && co && new Date(co) <= new Date(ci))
+      bad = setErr("checkout", "Must be after check-in.");
+    const g = document.getElementById("guests").value;
+    if (!g || g < 1 || g > 10) bad = setErr("guests", "Between 1 and 10.");
+  }
 
-    if (!email || !email.includes("@")) {
-        setError("email", "Enter a valid email address.");
-        hasError = true;
-    }
+  return !bad;
+}
 
-    if (!phone || phone.length < 10 || isNaN(phone)) {
-        setError("phone", "Enter a valid 10-digit phone number.");
-        hasError = true;
-    }
+// ─── Step Navigation ──────────────────────────────────────────────────────────
+let current = 1;
 
-    if (!checkin.value) {
-        setError("checkin", "Select check-in date.");
-        hasError = true;
-    }
+function goTo(n) {
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+  document.getElementById("step" + n).classList.add("active");
 
-    if (!checkout.value) {
-        setError("checkout", "Select check-out date.");
-        hasError = true;
-    }
+  // Pills
+  ["pill1","pill2","pill3"].forEach((id, i) => {
+    const p = document.getElementById(id);
+    p.classList.remove("active","done");
+    if (i + 1 < n)       p.classList.add("done");
+    else if (i + 1 === n) p.classList.add("active");
+  });
 
-    if (checkin.value && checkout.value) {
-        if (new Date(checkout.value) <= new Date(checkin.value)) {
-            setError("checkout", "Check-out must be after check-in.");
-            hasError = true;
-        }
-    }
+  // Connectors
+  document.querySelectorAll(".step-connector").forEach((c, i) => {
+    c.classList.toggle("lit", i + 1 < n);
+  });
 
-    if (!room) {
-        setError("room", "Please select a room type.");
-        hasError = true;
-    }
+  current = n;
+}
 
-    if (!guests || guests < 1 || guests > 10) {
-        setError("guests", "Guests must be between 1 and 10.");
-        hasError = true;
-    }
+function nextStep(from) {
+  if (!validate(from)) return;
+  if (from === 2) buildSummary();
+  goTo(from + 1);
+}
 
-    if (hasError) return;
+function prevStep(from) { goTo(from - 1); }
 
-    // Loading state
-    submitBtn.textContent = "Processing...";
-    submitBtn.disabled = true;
+// ─── Utilities ────────────────────────────────────────────────────────────────
+function fmt(d) {
+  if (!d) return "—";
+  return new Date(d + "T00:00:00").toLocaleDateString("en-IN", {
+    day: "numeric", month: "short", year: "numeric"
+  });
+}
 
-    setTimeout(() => {
-        successMsg.textContent = "Booking Successful! We will contact you soon.";
-        form.reset();
-        submitBtn.textContent = "Book Now";
-        submitBtn.disabled = false;
-    }, 1500);
+function nights() {
+  const ci = checkin.value, co = checkout.value;
+  if (!ci || !co) return 0;
+  return Math.round((new Date(co) - new Date(ci)) / 86400000);
+}
+
+function genId() {
+  return "SRN-" + Math.random().toString(36).substring(2,6).toUpperCase() + Date.now().toString().slice(-3);
+}
+
+// ─── Summary ─────────────────────────────────────────────────────────────────
+function buildSummary() {
+  const n = nights(), total = n * selectedPrice;
+  const rows = [
+    ["Guest",     document.getElementById("fullname").value.trim()],
+    ["Email",     document.getElementById("email").value.trim()],
+    ["Room",      selectedRoom + " Room"],
+    ["Check-in",  fmt(checkin.value)],
+    ["Check-out", fmt(checkout.value)],
+    ["Duration",  n + " night" + (n !== 1 ? "s" : "")],
+    ["Guests",    document.getElementById("guests").value],
+  ];
+  const req = document.getElementById("requests").value.trim();
+  if (req) rows.push(["Requests", req]);
+
+  document.getElementById("summaryBlock").innerHTML =
+    rows.map(([k, v]) =>
+      `<div class="s-row"><span class="k">${k}</span><span class="v">${v}</span></div>`
+    ).join("") +
+    `<div class="s-row total">
+       <span class="k">Total Estimate</span>
+       <span class="v">₹${total.toLocaleString("en-IN")}</span>
+     </div>`;
+}
+
+// ─── Modal ───────────────────────────────────────────────────────────────────
+function closeModal() {
+  document.getElementById("modalBg").classList.remove("open");
+  selectedRoom = null; selectedPrice = 0;
+  document.querySelectorAll(".room-tile input").forEach(r => r.checked = false);
+  goTo(1);
+}
+
+// ─── Submit ──────────────────────────────────────────────────────────────────
+document.getElementById("bookingForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const btn = document.getElementById("submitBtn");
+  btn.querySelector("span").textContent = "Processing…";
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const n = nights(), total = n * selectedPrice;
+    document.getElementById("bookingId").textContent = genId();
+    document.getElementById("modalDetails").innerHTML = [
+      ["Guest",    document.getElementById("fullname").value.trim()],
+      ["Room",     selectedRoom + " Room"],
+      ["Check-in", fmt(checkin.value)],
+      ["Check-out",fmt(checkout.value)],
+      ["Nights",   n + " night" + (n !== 1 ? "s" : "")],
+      ["Total",    "₹" + total.toLocaleString("en-IN")],
+    ].map(([k,v]) =>
+      `<div class="md-row"><span class="k">${k}</span><span class="v">${v}</span></div>`
+    ).join("");
+
+    this.reset();
+    btn.querySelector("span").textContent = "Confirm Booking";
+    btn.disabled = false;
+    document.getElementById("modalBg").classList.add("open");
+  }, 1500);
 });
